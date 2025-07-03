@@ -1,0 +1,74 @@
+Create table zepto(
+sku_id 	SERIAL PRIMARY KEY,
+category VARCHAR(50),
+name VARCHAR(160) NOT NULL,
+mrp NUMERIC(8,2),
+discountpercent NUMERIC(5,2),
+availableQuantity INTEGER,
+weightInGms INTEGER,
+outOfStock INTEGER,
+quantity INTEGER
+);
+select count(*) From zepto_v2;
+-- sample data 
+select * from zepto_v2
+LIMIT 10;
+
+# null values
+Select * from zepto_v2
+where name is NULL
+OR
+category is NULL
+OR
+mrp is NULL
+OR
+discountPercent is NULL
+OR
+availableQuantity is NULL
+OR
+discountedSellingPrice is NULL
+OR
+weightInGms is NULL
+OR
+outOfStock is NULL
+OR
+quantity is NULL;
+
+
+#distinct category
+
+SELECT DISTINCT category
+from zepto_v2
+order by category;
+
+#product in stock vs out of stock
+
+select outOfStock, count(name)
+from zepto_v2
+group by outOfStock;
+
+#data cleaning
+select * from zepto_v2
+where mrp = 0 or discountedSellingPrice = 0;
+
+delete from zepto_v2
+where mrp = 0;
+
+#Q1. find the top 10 best value products based on the discounted price ?
+select distinct name, mrp, discountpercent
+from zepto_v2
+order by discountPercent desc
+limit 10;
+
+#Q2. what are the products with high mrp but out of stock ?
+select distinct name, mrp
+from zepto_v2
+where outOfStock = TRUE and mrp > 300
+order by mrp DESC;
+
+#calculate estimate revenue for each category
+select category,
+sum(discountedSellingPrice + availableQuantity) As total_revenue
+from zepto
+group by category
+order by total_revenue; 
